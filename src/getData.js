@@ -97,11 +97,11 @@ const mockData = {
 
 const combineData = async () => {
   for (let key in dataDict) {
-    console.log(`Fetching for ${dataDict[key]}...`);
+    console.log(`Fetching for ${key}...`);
     const { latitude, longitude, type } = dataDict[key];
     const tweetData = await getTweet(latitude, longitude, type);
-    console.log(tweetData);
     dataDict[key] = { ...dataDict[key], ...tweetData };
+    console.log(dataDict[key]);
   }
 };
 
@@ -111,13 +111,9 @@ const main = async () => {
   await getData();
   await loadLayers();
   save();
+  await combineData();
+  save();
   console.log("Done");
 };
 
-const main2 = async () => {
-  dataDict = await readFile("./dansData.json");
-  combineData();
-  save();
-};
-
-main2();
+main();
