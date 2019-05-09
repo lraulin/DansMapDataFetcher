@@ -6,13 +6,39 @@ const baseApiUrl = "http://dotdb2.eastus.cloudapp.azure.com:8082/api/twitter/";
 
 let dataDict = {};
 
-const writeToFile = (text, file) => {
-  const stream = fs.createWriteStream(file, { flags: "a" });
-  stream.write(text + "\n");
-  stream.end();
+const writeTextAsync = (path, text) =>
+  new Promise((res, rej) => {
+    fs.writeFile(path, text, "utf8", err => {
+      if (err) {
+        rej(err);
+      } else {
+        res(null);
+      }
+    });
+  });
+
+const writeJson = (path, obj) =>
+  fs.writeFile(path, JSON.stringify(obj), err => console.log(err));
+
+const writeJsonAsync = (path, obj) =>
+  new Promise((res, rej) => {
+    fs.writeFile(path, JSON.stringify(obj), err => {
+      if (err) {
+        rej(err);
+      } else {
+        res(null);
+      }
+    });
+  });
+
+const doit = async () => {
+  await writeText("./test.txt", words);
+  console.log("DONE!");
 };
 
-const writeJsonToFile = (obj, file) => writeToFile(JSON.stringify(obj), file);
+// writeText("./test.txt", "testing...");
+fs.writeFile("./test.txt", words, e => console.log(e));
+// doit();
 
 const readFile = (path, opts = "utf8") =>
   new Promise((res, rej) => {
@@ -105,7 +131,26 @@ const combineData = async () => {
   }
 };
 
-const save = () => writeJsonToFile(dataDict, "dansData.json");
+const save = () => writeJson("./dansData.json", dataDict);
+
+const summarize = async () => {
+  let total = 0,
+    withTypes = 0,
+    withTweets = 0;
+
+  Object.keys(dataDict).forEach(key => {
+    total++;
+    if (data[key].incidentType) withTypes++;
+    if (data[key].id) withTweets++;
+  });
+
+  const summary = `
+TOTAL:       ${total}
+Categorized: ${withTypes} (${Math.round((withTypes / total) * 100)}%)
+Tweet:       ${withTweets} (${Math.round((withTweets / total) * 100)}%)
+`;
+  fs.writeFile("./summary.log", summary, e => console.log(e));
+};
 
 const main = async () => {
   await getData();
@@ -113,6 +158,7 @@ const main = async () => {
   save();
   await combineData();
   save();
+  summarize();
   console.log("Done");
 };
 
