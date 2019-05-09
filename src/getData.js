@@ -36,10 +36,6 @@ const doit = async () => {
   console.log("DONE!");
 };
 
-// writeText("./test.txt", "testing...");
-fs.writeFile("./test.txt", words, e => console.log(e));
-// doit();
-
 const readFile = (path, opts = "utf8") =>
   new Promise((res, rej) => {
     fs.readFile(path, opts, (err, data) => {
