@@ -12,7 +12,9 @@
     "axios": "^0.18.0",
     "leaflet": "^1.4.0",
     "mongoose": "^5.5.4",
-    "node-fetch": "^2.4.1"
+    "node-fetch": "^2.4.1",
+    "pg": "^7.11.0",
+    "sequelize": "^5.8.6"
   },
   "devDependencies": {
     "eslint": "^5.16.0"
